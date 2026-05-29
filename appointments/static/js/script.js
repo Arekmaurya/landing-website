@@ -57,7 +57,23 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(el);
     });
 
-    // 4. Form Submission Handling
+    // 4. Helper: Get CSRF token from the cookie (set by Django)
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // 5. Form Submission Handling
     const form = document.querySelector('#appointment-form');
     const formMsg = document.querySelector('#form-msg');
     const submitBtn = document.querySelector('#submit-btn');
@@ -82,11 +98,12 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             try {
-                // Send simulated POST request to our node.js backend
+                // Send POST request to the Django backend
                 const response = await fetch('/api/appointments', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken'),
                     },
                     body: JSON.stringify(formData)
                 });

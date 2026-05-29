@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +8,7 @@
     <meta name="description" content="Expert orthopaedic specialist focusing on joint replacement, sports medicine, and advanced arthroscopy.">
     <!-- Google Fonts for Modern Typography -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -75,7 +76,7 @@
     <section id="about" class="about segment">
         <div class="container about-layout">
             <div class="about-image-wrapper animate-on-scroll fade-right">
-                <img src="assets/images/doctor.png" alt="Dr. John Doe Portrait" class="about-img">
+                <img src="{% static 'assets/images/doctor.png' %}" alt="Dr. John Doe Portrait" class="about-img">
                 <div class="experience-badge">
                     <span class="years">15+</span>
                     <span class="text">Years of<br>Excellence</span>
@@ -206,6 +207,7 @@
             
             <div class="form-container animate-on-scroll fade-left">
                 <form id="appointment-form" class="appointment-form">
+                    {% csrf_token %}
                     <div class="form-group row">
                         <div class="col">
                             <label for="fname">First Name</label>
@@ -297,6 +299,6 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>

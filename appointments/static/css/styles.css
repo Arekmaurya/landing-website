@@ -203,7 +203,7 @@ a {
     min-height: 600px;
     display: flex;
     align-items: center;
-    background: url('assets/images/hero_bg.png') center/cover no-repeat;
+    background: url('/static/assets/images/hero_bg.png') center/cover no-repeat;
 }
 
 .hero-overlay {
