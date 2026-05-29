@@ -28,21 +28,24 @@
       "initial": "MS",
       "stars": 5,
       "quote": "Dr. Agnihotri is a miracle worker. My chronic knee pain is completely gone after my arthroscopic procedure. I highly recommend him!",
-      "delay": "0.1s"
+      "delay": "0.1s",
+      "image": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&h=150&q=80"
     },
     {
       "name": "Jessica R.",
       "initial": "JR",
       "stars": 5,
       "quote": "As an amateur runner, my ACL tear felt like the end. The sports medicine team here got me back on the track faster than I hoped.",
-      "delay": "0.2s"
+      "delay": "0.2s",
+      "image": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80"
     },
     {
       "name": "David T.",
       "initial": "DT",
       "stars": 5,
       "quote": "Very professional setting. The staff is polite, wait times are short, and the doctor thoroughly explains every step of the treatment.",
-      "delay": "0.3s"
+      "delay": "0.3s",
+      "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80"
     }
   ]
 }

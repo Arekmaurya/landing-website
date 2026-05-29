@@ -153,7 +153,11 @@
                     </div>
                     <p class="quote">"{{ review.quote }}"</p>
                     <div class="author">
+                        {% if review.image %}
+                        <img src="{{ review.image }}" alt="{{ review.name }}" class="patient-img">
+                        {% else %}
                         <div class="initial">{{ review.initial }}</div>
+                        {% endif %}
                         <div class="name">{{ review.name }}</div>
                     </div>
                 </div>

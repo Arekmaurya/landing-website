@@ -8,7 +8,8 @@ You can manage all of the website's content and configuration settings from a si
 
 Open `appointments/data/content.json` to edit:
 1. **Credentials**: A list of strings displaying the doctor's board certifications and qualifications.
-2. **Reviews**: Patient stories (including names, initials, quotes, and star ratings).
+2. **Reviews**: Patient stories (including names, initials, quotes, star ratings, and optional patient photos).
+   * *Note for Patient Images:* You can add an optional `"image"` field pointing to a local static path (e.g., `/static/assets/images/filename.png`) or any online image URL. If a review has no image, the website will automatically fall back to rendering a clean circle with their initials.
 3. **Contact Info & Map**: Clinic address, phone numbers, working hours, and social media links.
    * *Note for Map Link:* You can paste *any* standard Google Maps link (including share links like `https://maps.app.goo.gl/...`, place search URLs, or even just a plain text address like "Empire State Building, NY") into `map_link`. The website backend will resolve and embed the map automatically.
 4. **Notification Settings**: Under `notification_method`, you can select:

@@ -120,6 +120,32 @@ class ReviewsTests(TestCase):
         response = self.client.get('/')
         self.assertContains(response, 'fa-solid fa-star')
 
+    def test_reviews_image_rendering_and_fallback(self):
+        """Test patient image rendering and fallback to initials."""
+        # When image exists in review, it should be rendered as an img tag
+        response = self.client.get('/')
+        self.assertContains(response, 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e')
+        self.assertContains(response, 'class="patient-img"')
+        
+        # When image is not present, it should fall back to initials circle
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        path = os.path.join(base_dir, 'data', 'content.json')
+        with open(path, 'r') as f:
+            original = f.read()
+        try:
+            data = json.loads(original)
+            # Remove image key from first review
+            if 'image' in data['reviews'][0]:
+                del data['reviews'][0]['image']
+            with open(path, 'w') as f:
+                json.dump(data, f)
+                
+            resp = self.client.get('/')
+            self.assertContains(resp, '<div class="initial">MS</div>')
+        finally:
+            with open(path, 'w') as f:
+                f.write(original)
+
 
 class ConfigTests(TestCase):
     """Test that config.json is valid and contains expected keys."""
