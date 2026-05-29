@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 name: document.querySelector('#name').value.trim(),
                 age: document.querySelector('#age').value.trim(),
                 sex: document.querySelector('#sex').value,
-                contact: document.querySelector('#contact').value.trim(),
+                contact: document.querySelector('#contact-input').value.trim(),
             };
 
             try {

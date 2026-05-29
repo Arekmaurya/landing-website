@@ -49,7 +49,7 @@ class HomepageTests(TestCase):
         self.assertContains(response, 'id="name"')
         self.assertContains(response, 'id="age"')
         self.assertContains(response, 'id="sex"')
-        self.assertContains(response, 'id="contact"')
+        self.assertContains(response, 'id="contact-input"')
         self.assertContains(response, 'id="submit-btn"')
 
     def test_homepage_contains_hero_section(self):
