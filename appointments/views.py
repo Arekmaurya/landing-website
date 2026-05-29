@@ -9,6 +9,7 @@ from django.views.decorators.http import require_POST
 
 import os
 import requests
+from .models import ClinicInformation, Credential, Review
 logger = logging.getLogger(__name__)
 
 
@@ -61,20 +62,34 @@ def resolve_map_embed_url(map_link):
 
 def index(request):
     """Serve the main landing page."""
-    base_dir = os.path.dirname(os.path.abspath(__file__))
+    clinic = ClinicInformation.objects.first()
     
-    content = {}
-    try:
-        with open(os.path.join(base_dir, 'data', 'content.json'), 'r') as f:
-            content = json.load(f)
-    except Exception as e:
-        logger.error(f"Error loading content.json: {e}")
-
-    credentials = content.get('credentials', [])
-    reviews = content.get('reviews', [])
-    contact = content.get('contact', {})
+    # Fallback to local default instance if none exists
+    if not clinic:
+        clinic = ClinicInformation()
+        
+    credentials = [c.text for c in Credential.objects.all()]
+    reviews = Review.objects.all()
     
-    map_embed_url = resolve_map_embed_url(contact.get('map_link', ''))
+    map_embed_url = resolve_map_embed_url(clinic.map_link)
+    
+    # Format contact structure matching what index.html expects
+    contact = {
+        'address': clinic.address,
+        'phone': clinic.phone,
+        'whatsapp': clinic.whatsapp,
+        'working_hours': {
+            'weekdays': clinic.weekdays_working_hours,
+            'saturday': clinic.saturday_working_hours,
+            'sunday': clinic.sunday_working_hours,
+        },
+        'socials': {
+            'facebook': clinic.facebook_url,
+            'twitter': clinic.twitter_url,
+            'instagram': clinic.instagram_url,
+            'linkedin': clinic.linkedin_url,
+        }
+    }
     
     context = {
         'credentials': credentials,
@@ -109,17 +124,9 @@ def api_appointments(request):
             name, age, sex, contact,
         )
 
-        # Determine notification method from unified content.json
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        content_path = os.path.join(base_dir, 'data', 'content.json')
-        notification_method = 'email'
-        
-        try:
-            with open(content_path, 'r') as f:
-                content = json.load(f)
-                notification_method = content.get('notification_method', 'email').lower()
-        except Exception as e:
-            logger.error(f"Error loading content.json: {e}")
+        # Determine notification method from database
+        clinic = ClinicInformation.objects.first()
+        notification_method = clinic.notification_method.lower() if clinic else 'both'
 
         # Send Email Notification
         if notification_method in ['email', 'both']:
