@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return cookieValue;
     }
 
-    // 5. Form Submission Handling
+    // 5. Form Submission — sends booking to backend, admin gets email
     const form = document.querySelector('#appointment-form');
     const formMsg = document.querySelector('#form-msg');
     const submitBtn = document.querySelector('#submit-btn');
@@ -81,24 +81,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if(form) {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            // Basic UI loading state
+
             const originalBtnText = submitBtn.innerText;
-            submitBtn.innerText = 'Sending request...';
+            submitBtn.innerText = 'Confirming...';
             submitBtn.disabled = true;
 
             // Collect form data
             const formData = {
-                firstName: document.querySelector('#fname').value,
-                lastName: document.querySelector('#lname').value,
-                email: document.querySelector('#email').value,
-                phone: document.querySelector('#phone').value,
-                service: document.querySelector('#service').value,
-                message: document.querySelector('#message').value,
+                name: document.querySelector('#name').value.trim(),
+                age: document.querySelector('#age').value.trim(),
+                sex: document.querySelector('#sex').value,
+                contact: document.querySelector('#contact').value.trim(),
             };
 
             try {
-                // Send POST request to the Django backend
                 const response = await fetch('/api/appointments', {
                     method: 'POST',
                     headers: {
@@ -111,30 +107,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = await response.json();
 
                 if (response.ok) {
-                    formMsg.innerText = result.message || 'Appointment requested successfully! We will contact you shortly.';
+                    formMsg.innerText = '✅ ' + (result.message || 'Booking confirmed!');
                     formMsg.className = 'form-message success';
                     form.reset();
                 } else {
-                    formMsg.innerText = result.error || 'An error occurred. Please try again.';
+                    formMsg.innerText = result.error || 'Something went wrong. Please try again.';
                     formMsg.className = 'form-message error';
                 }
             } catch (error) {
                 console.error('Submission error:', error);
-                // Fallback gracefully if backend is not running
-                formMsg.innerText = 'Network error or backend is not running. Form submitted locally!';
-                formMsg.className = 'form-message success';
-                form.reset();
+                formMsg.innerText = 'Network error. Please try again later.';
+                formMsg.className = 'form-message error';
             } finally {
-                // Restore button state
                 submitBtn.innerText = originalBtnText;
                 submitBtn.disabled = false;
-                
-                // Hide message after 5 seconds
+
                 setTimeout(() => {
                     formMsg.style.display = 'none';
-                    // clear classes
                     formMsg.className = 'form-message';
-                }, 5000);
+                }, 6000);
             }
         });
     }

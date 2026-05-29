@@ -17,19 +17,17 @@ def index(request):
 
 @require_POST
 def api_appointments(request):
-    """Handle appointment form submissions via JSON POST."""
+    """Handle appointment form submissions and email the admin."""
     try:
         data = json.loads(request.body)
 
-        first_name = data.get('firstName', '').strip()
-        last_name = data.get('lastName', '').strip()
-        email = data.get('email', '').strip()
-        phone = data.get('phone', '').strip()
-        service = data.get('service', '').strip()
-        message = data.get('message', '').strip()
+        name = data.get('name', '').strip()
+        age = data.get('age', '').strip()
+        sex = data.get('sex', '').strip()
+        contact = data.get('contact', '').strip()
 
         # Basic validation
-        if not all([first_name, last_name, email, phone]):
+        if not all([name, age, sex, contact]):
             return JsonResponse(
                 {'error': 'Please fill in all required fields.'},
                 status=400,
@@ -37,24 +35,23 @@ def api_appointments(request):
 
         # Log the appointment
         logger.info(
-            'New Appointment — Name: %s %s, Email: %s, Phone: %s, Service: %s',
-            first_name, last_name, email, phone, service,
+            'New Appointment — Name: %s, Age: %s, Sex: %s, Contact: %s',
+            name, age, sex, contact,
         )
 
-        # Send email notification if SMTP is configured
+        # Send email notification to admin
         receiver_email = getattr(settings, 'RECEIVER_EMAIL', None)
         smtp_user = getattr(settings, 'EMAIL_HOST_USER', None)
 
         if smtp_user and receiver_email:
             try:
-                subject = f'New Appointment Request: {first_name} {last_name}'
+                subject = f'New Booking: {name}'
                 text_body = (
-                    f'You have received a new appointment request.\n\n'
-                    f'Name: {first_name} {last_name}\n'
-                    f'Email: {email}\n'
-                    f'Phone: {phone}\n'
-                    f'Service: {service}\n'
-                    f'Message: {message or "None provided"}\n'
+                    f'New appointment booking received.\n\n'
+                    f'Name: {name}\n'
+                    f'Age: {age}\n'
+                    f'Sex: {sex}\n'
+                    f'Contact: {contact}\n'
                 )
                 send_mail(
                     subject,
@@ -63,16 +60,18 @@ def api_appointments(request):
                     [receiver_email],
                     fail_silently=False,
                 )
-                logger.info('Notification email sent successfully.')
+                logger.info('Notification email sent to admin.')
             except Exception:
                 logger.exception('Failed to send notification email.')
         else:
-            logger.info('Skipping email notification: credentials not set in .env file.')
+            logger.warning(
+                'Email not sent: SMTP credentials not configured in .env'
+            )
 
         return JsonResponse({
             'message': (
-                'Appointment successfully requested! '
-                'Our clinic will contact you shortly to confirm the scheduled time.'
+                'Booking confirmed! '
+                'Our team will contact you shortly.'
             ),
         })
 

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dr. John Doe | Premium Orthopaedic Care</title>
+    <title>Dr. Akhil Agnihotri | Premium Orthopaedic Care</title>
     <meta name="description" content="Expert orthopaedic specialist focusing on joint replacement, sports medicine, and advanced arthroscopy.">
     <!-- Google Fonts for Modern Typography -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -76,16 +76,16 @@
     <section id="about" class="about segment">
         <div class="container about-layout">
             <div class="about-image-wrapper animate-on-scroll fade-right">
-                <img src="{% static 'assets/images/doctor.png' %}" alt="Dr. John Doe Portrait" class="about-img">
+                <img src="{% static 'assets/images/doctor.png' %}" alt="Dr. Akhil Agnihotri Portrait" class="about-img">
                 <div class="experience-badge">
                     <span class="years">15+</span>
                     <span class="text">Years of<br>Excellence</span>
                 </div>
             </div>
             <div class="about-content animate-on-scroll fade-left">
-                <h2 class="section-title">Meet Dr. John Doe</h2>
+                <h2 class="section-title">Meet Dr. Akhil Agnihotri</h2>
                 <h4 class="subtitle">Chief Orthopaedic Surgeon</h4>
-                <p>With over 15 years of specialized experience in complex joint pathologies, Dr. Doe is committed to providing evidence-based, compassionate care. His approach prioritizes non-surgical interventions when possible, and precise surgical techniques when necessary.</p>
+                <p>With over 15 years of specialized experience in complex joint pathologies, Dr. Agnihotri is committed to providing evidence-based, compassionate care. His approach prioritizes non-surgical interventions when possible, and precise surgical techniques when necessary.</p>
                 <ul class="credentials">
                     <li><i class="fa-solid fa-check-circle"></i> Board-Certified Orthopaedic Surgeon</li>
                     <li><i class="fa-solid fa-check-circle"></i> Fellowship Trained in Sports Medicine</li>
@@ -144,7 +144,7 @@
                     <div class="stars">
                         <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
                     </div>
-                    <p class="quote">"I was suffering from severe knee pain for years. Dr. Doe's robotic-assisted surgery had me walking pain-free in weeks. Truly life changing!"</p>
+                    <p class="quote">"I was suffering from severe knee pain for years. Dr. Agnihotri's robotic-assisted surgery had me walking pain-free in weeks. Truly life changing!"</p>
                     <div class="author">
                         <div class="initial">MS</div>
                         <div class="name">Michael S.</div>
@@ -196,10 +196,10 @@
                         </div>
                     </div>
                     <div class="info-block">
-                        <i class="fa-solid fa-envelope"></i>
+                        <i class="fa-brands fa-whatsapp"></i>
                         <div>
-                            <h4>Email Queries</h4>
-                            <p>appointments@orthocare.com</p>
+                            <h4>WhatsApp Us</h4>
+                            <p>+1 (555) 123-4567</p>
                         </div>
                     </div>
                 </div>
@@ -210,40 +210,30 @@
                     {% csrf_token %}
                     <div class="form-group row">
                         <div class="col">
-                            <label for="fname">First Name</label>
-                            <input type="text" id="fname" name="firstName" required placeholder="John">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" name="name" required placeholder="Akhil Sharma">
                         </div>
                         <div class="col">
-                            <label for="lname">Last Name</label>
-                            <input type="text" id="lname" name="lastName" required placeholder="Doe">
+                            <label for="age">Age</label>
+                            <input type="number" id="age" name="age" required placeholder="30" min="1" max="120">
                         </div>
                     </div>
                     <div class="form-group row">
                         <div class="col">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" required placeholder="john@example.com">
+                            <label for="sex">Sex</label>
+                            <select id="sex" name="sex" required>
+                                <option value="" disabled selected>Select</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
                         </div>
                         <div class="col">
-                            <label for="phone">Phone</label>
-                            <input type="tel" id="phone" name="phone" required placeholder="(555) 000-0000">
+                            <label for="contact">Contact Number</label>
+                            <input type="tel" id="contact" name="contact" required placeholder="+91 98765 43210">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="service">Condition / Service Needed</label>
-                        <select id="service" name="service" required>
-                            <option value="" disabled selected>Select an option</option>
-                            <option value="knee">Knee Pain / Surgery</option>
-                            <option value="hip">Hip Pain / Surgery</option>
-                            <option value="shoulder">Shoulder & Upper Extremity</option>
-                            <option value="sports">Sports Injury</option>
-                            <option value="other">Other Consultation</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Message (Optional)</label>
-                        <textarea id="message" name="message" rows="4" placeholder="Briefly describe your symptoms..."></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-block" id="submit-btn">Request Appointment</button>
+                    <button type="submit" class="btn btn-primary btn-block" id="submit-btn">Confirm Booking</button>
                     <div id="form-msg" class="form-message"></div>
                 </form>
             </div>
@@ -282,7 +272,7 @@
             </div>
             <div class="footer-links">
                 <h4>Quick Links</h4>
-                <a href="#about">About Dr. Doe</a>
+                <a href="#about">About Dr. Agnihotri</a>
                 <a href="#specialties">Treatments</a>
                 <a href="#testimonials">Patient Reviews</a>
                 <a href="#">Privacy Policy</a>
