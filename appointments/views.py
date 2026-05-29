@@ -63,28 +63,17 @@ def index(request):
     """Serve the main landing page."""
     base_dir = os.path.dirname(os.path.abspath(__file__))
     
-    credentials = []
-    reviews = []
-    contact = {}
+    content = {}
+    try:
+        with open(os.path.join(base_dir, 'data', 'content.json'), 'r') as f:
+            content = json.load(f)
+    except Exception as e:
+        logger.error(f"Error loading content.json: {e}")
+
+    credentials = content.get('credentials', [])
+    reviews = content.get('reviews', [])
+    contact = content.get('contact', {})
     
-    try:
-        with open(os.path.join(base_dir, 'data', 'credentials.json'), 'r') as f:
-            credentials = json.load(f)
-    except Exception as e:
-        logger.error(f"Error loading credentials: {e}")
-
-    try:
-        with open(os.path.join(base_dir, 'data', 'reviews.json'), 'r') as f:
-            reviews = json.load(f)
-    except Exception as e:
-        logger.error(f"Error loading reviews: {e}")
-
-    try:
-        with open(os.path.join(base_dir, 'data', 'contact.json'), 'r') as f:
-            contact = json.load(f)
-    except Exception as e:
-        logger.error(f"Error loading contact info: {e}")
-        
     map_embed_url = resolve_map_embed_url(contact.get('map_link', ''))
     
     context = {
@@ -120,17 +109,17 @@ def api_appointments(request):
             name, age, sex, contact,
         )
 
-        # Determine notification method
+        # Determine notification method from unified content.json
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        config_path = os.path.join(base_dir, 'data', 'config.json')
+        content_path = os.path.join(base_dir, 'data', 'content.json')
         notification_method = 'email'
         
         try:
-            with open(config_path, 'r') as f:
-                config = json.load(f)
-                notification_method = config.get('notification_method', 'email').lower()
+            with open(content_path, 'r') as f:
+                content = json.load(f)
+                notification_method = content.get('notification_method', 'email').lower()
         except Exception as e:
-            logger.error(f"Error loading config.json: {e}")
+            logger.error(f"Error loading content.json: {e}")
 
         # Send Email Notification
         if notification_method in ['email', 'both']:

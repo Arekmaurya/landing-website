@@ -73,14 +73,15 @@ class CredentialsTests(TestCase):
         self.assertContains(response, 'Member of the National Orthopaedic Association')
 
     def test_credentials_json_is_valid(self):
-        """credentials.json should be valid JSON and a list of strings."""
+        """content.json should contain valid credentials list."""
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        path = os.path.join(base_dir, 'data', 'credentials.json')
+        path = os.path.join(base_dir, 'data', 'content.json')
         with open(path, 'r') as f:
             data = json.load(f)
-        self.assertIsInstance(data, list)
-        self.assertTrue(len(data) > 0)
-        for item in data:
+        credentials = data.get('credentials', [])
+        self.assertIsInstance(credentials, list)
+        self.assertTrue(len(credentials) > 0)
+        for item in credentials:
             self.assertIsInstance(item, str)
 
 
@@ -98,14 +99,15 @@ class ReviewsTests(TestCase):
         self.assertContains(response, 'David T.')
 
     def test_reviews_json_is_valid(self):
-        """reviews.json should be valid JSON with required fields."""
+        """content.json should contain valid reviews list."""
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        path = os.path.join(base_dir, 'data', 'reviews.json')
+        path = os.path.join(base_dir, 'data', 'content.json')
         with open(path, 'r') as f:
             data = json.load(f)
-        self.assertIsInstance(data, list)
-        self.assertTrue(len(data) > 0)
-        for review in data:
+        reviews = data.get('reviews', [])
+        self.assertIsInstance(reviews, list)
+        self.assertTrue(len(reviews) > 0)
+        for review in reviews:
             self.assertIn('quote', review)
             self.assertIn('initial', review)
             self.assertIn('name', review)
@@ -123,9 +125,9 @@ class ConfigTests(TestCase):
     """Test that config.json is valid and contains expected keys."""
 
     def test_config_json_is_valid(self):
-        """config.json should be valid JSON with notification_method."""
+        """content.json should contain notification_method."""
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        path = os.path.join(base_dir, 'data', 'config.json')
+        path = os.path.join(base_dir, 'data', 'content.json')
         with open(path, 'r') as f:
             data = json.load(f)
         self.assertIn('notification_method', data)
@@ -139,11 +141,11 @@ class ContactTests(TestCase):
         self.client = Client()
 
     def test_contact_json_is_valid(self):
-        """contact.json should be valid JSON and have required fields."""
+        """content.json should contain contact details with required fields."""
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        path = os.path.join(base_dir, 'data', 'contact.json')
+        path = os.path.join(base_dir, 'data', 'content.json')
         with open(path, 'r') as f:
-            data = json.load(f)
+            data = json.load(f).get('contact', {})
         self.assertIn('address', data)
         self.assertIn('phone', data)
         self.assertIn('whatsapp', data)
@@ -152,7 +154,7 @@ class ContactTests(TestCase):
         self.assertIn('socials', data)
 
     def test_contact_rendered_on_homepage(self):
-        """Contact info from contact.json should appear on the homepage."""
+        """Contact info from content.json should appear on the homepage."""
         response = self.client.get('/')
         self.assertContains(response, '123 Medical Arcade')
         self.assertContains(response, '+1 (555) 123-4567')
@@ -160,9 +162,9 @@ class ContactTests(TestCase):
         self.assertContains(response, 'href="https://twitter.com"')
 
     def test_socials_hiding_if_empty(self):
-        """Social icons should not render if they are empty in contact.json."""
+        """Social icons should not render if they are empty in content.json."""
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        path = os.path.join(base_dir, 'data', 'contact.json')
+        path = os.path.join(base_dir, 'data', 'content.json')
         
         # Back up original content
         with open(path, 'r') as f:
@@ -171,8 +173,8 @@ class ContactTests(TestCase):
         try:
             # Write contact data with empty socials
             data = json.loads(original_content)
-            data['socials']['facebook'] = ''
-            data['socials']['twitter'] = ''
+            data['contact']['socials']['facebook'] = ''
+            data['contact']['socials']['twitter'] = ''
             with open(path, 'w') as f:
                 json.dump(data, f)
                 
@@ -183,7 +185,7 @@ class ContactTests(TestCase):
             # But instagram and linkedin should still render
             self.assertContains(response, 'aria-label="Instagram"')
         finally:
-            # Restore original contact.json
+            # Restore original content.json
             with open(path, 'w') as f:
                 f.write(original_content)
 
@@ -292,7 +294,7 @@ class NotificationMethodTests(TestCase):
             'contact': '9999999999',
         }
         self.base_dir = os.path.dirname(os.path.abspath(__file__))
-        self.config_path = os.path.join(self.base_dir, 'data', 'config.json')
+        self.config_path = os.path.join(self.base_dir, 'data', 'content.json')
         # Save original config
         with open(self.config_path, 'r') as f:
             self.original_config = f.read()
@@ -303,8 +305,11 @@ class NotificationMethodTests(TestCase):
             f.write(self.original_config)
 
     def _set_config(self, method):
+        with open(self.config_path, 'r') as f:
+            data = json.load(f)
+        data['notification_method'] = method
         with open(self.config_path, 'w') as f:
-            json.dump({'notification_method': method}, f)
+            json.dump(data, f)
 
     @patch('appointments.views.send_mail')
     def test_email_only_calls_send_mail(self, mock_send_mail):

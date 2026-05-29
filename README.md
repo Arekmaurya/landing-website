@@ -2,29 +2,21 @@
 
 This is a Django-based website for Dr. Akhil Agnihotri's Orthopaedic Care clinic.
 
-## Editing Website Content
+## Editing Website Content & Settings
 
-You can easily edit the doctor's credentials and patient reviews without touching any HTML code. 
+You can manage all of the website's content and configuration settings from a single, simple file: **`appointments/data/content.json`**.
 
-1. **Credentials**: Open `appointments/data/credentials.json` and edit the text inside the list.
-2. **Reviews**: Open `appointments/data/reviews.json` and edit the quote, name, initial, and star rating.
-3. **Contact Info & Map**: Open `appointments/data/contact.json` to change the clinic's address, phone, WhatsApp, working hours, or map link.
+Open `appointments/data/content.json` to edit:
+1. **Credentials**: A list of strings displaying the doctor's board certifications and qualifications.
+2. **Reviews**: Patient stories (including names, initials, quotes, and star ratings).
+3. **Contact Info & Map**: Clinic address, phone numbers, working hours, and social media links.
+   * *Note for Map Link:* You can paste *any* standard Google Maps link (including share links like `https://maps.app.goo.gl/...`, place search URLs, or even just a plain text address like "Empire State Building, NY") into `map_link`. The website backend will resolve and embed the map automatically.
+4. **Notification Settings**: Under `notification_method`, you can select:
+   * `"email"` - Send an email notification only.
+   * `"whatsapp"` - Send a WhatsApp notification only.
+   * `"both"` - Send both notifications.
 
-*Note for Map Link:* You can paste *any* standard Google Maps link (including share links like `https://maps.app.goo.gl/...`, place search URLs, or even just a plain text address like "Empire State Building, NY") into `map_link`. The website backend will resolve and embed the map automatically.
-
-The website will automatically read these files and update the live page.
-
-## Notification Configuration
-
-When a patient books an appointment, the admin can receive a notification via Email, WhatsApp, or both.
-
-### Toggling Notifications
-You can switch the notification method on the fly by editing the `appointments/data/config.json` file. Set the `notification_method` to one of the following:
-- `"email"` - Send an email only.
-- `"whatsapp"` - Send a WhatsApp message only.
-- `"both"` - Send both.
-
-*Note: Changes to this file apply instantly without needing a server restart.*
+*Note: Any edits made to `content.json` are applied instantly without needing a server restart.*
 
 ### Setting up Environment Variables
 Before notifications will send, you must copy `.env.example` to `.env` and fill in your credentials.
