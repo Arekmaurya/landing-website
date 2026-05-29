@@ -138,3 +138,8 @@ EMAIL_HOST_PASSWORD = os.environ.get('SMTP_PASS', '')
 
 # The email address that receives appointment notifications
 RECEIVER_EMAIL = os.environ.get('RECEIVER_EMAIL', '')
+
+# WhatsApp Business API Configuration
+WHATSAPP_PHONE_NUMBER_ID = os.environ.get('WHATSAPP_PHONE_NUMBER_ID', '')
+WHATSAPP_ACCESS_TOKEN = os.environ.get('WHATSAPP_ACCESS_TOKEN', '')
+ADMIN_WHATSAPP_NUMBER = os.environ.get('ADMIN_WHATSAPP_NUMBER', '')

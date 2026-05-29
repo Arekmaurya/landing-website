@@ -1,0 +1,23 @@
+[
+  {
+    "quote": "I was suffering from severe knee pain for years. Dr. Agnihotri's robotic-assisted surgery had me walking pain-free in weeks. Truly life changing!",
+    "initial": "MS",
+    "name": "Michael S.",
+    "stars": 5,
+    "delay": "0s"
+  },
+  {
+    "quote": "As an amateur runner, my ACL tear felt like the end. The sports medicine team here got me back on the track faster than I hoped.",
+    "initial": "JR",
+    "name": "Jessica R.",
+    "stars": 5,
+    "delay": "0.1s"
+  },
+  {
+    "quote": "Very professional setting. The staff is polite, wait times are short, and the doctor thoroughly explains every step of the treatment.",
+    "initial": "DT",
+    "name": "David T.",
+    "stars": 5,
+    "delay": "0.2s"
+  }
+]

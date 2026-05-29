@@ -87,9 +87,9 @@
                 <h4 class="subtitle">Chief Orthopaedic Surgeon</h4>
                 <p>With over 15 years of specialized experience in complex joint pathologies, Dr. Agnihotri is committed to providing evidence-based, compassionate care. His approach prioritizes non-surgical interventions when possible, and precise surgical techniques when necessary.</p>
                 <ul class="credentials">
-                    <li><i class="fa-solid fa-check-circle"></i> Board-Certified Orthopaedic Surgeon</li>
-                    <li><i class="fa-solid fa-check-circle"></i> Fellowship Trained in Sports Medicine</li>
-                    <li><i class="fa-solid fa-check-circle"></i> Member of the National Orthopaedic Association</li>
+                    {% for credential in credentials %}
+                    <li><i class="fa-solid fa-check-circle"></i> {{ credential }}</li>
+                    {% endfor %}
                 </ul>
                 <a href="#contact" class="btn btn-secondary">Get in Touch</a>
             </div>
@@ -140,36 +140,24 @@
                 <p>Hear from patients who have regained their mobility and strength.</p>
             </div>
             <div class="testimonial-grid">
-                <div class="testimonial-card animate-on-scroll fade-up">
+                {% for review in reviews %}
+                <div class="testimonial-card animate-on-scroll fade-up"{% if review.delay %} style="transition-delay: {{ review.delay }};"{% endif %}>
                     <div class="stars">
-                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        {% for _ in "12345"|make_list %}
+                            {% if forloop.counter <= review.stars %}
+                                <i class="fa-solid fa-star"></i>
+                            {% else %}
+                                <i class="fa-regular fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
                     </div>
-                    <p class="quote">"I was suffering from severe knee pain for years. Dr. Agnihotri's robotic-assisted surgery had me walking pain-free in weeks. Truly life changing!"</p>
+                    <p class="quote">"{{ review.quote }}"</p>
                     <div class="author">
-                        <div class="initial">MS</div>
-                        <div class="name">Michael S.</div>
+                        <div class="initial">{{ review.initial }}</div>
+                        <div class="name">{{ review.name }}</div>
                     </div>
                 </div>
-                <div class="testimonial-card animate-on-scroll fade-up" style="transition-delay: 0.1s;">
-                    <div class="stars">
-                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                    </div>
-                    <p class="quote">"As an amateur runner, my ACL tear felt like the end. The sports medicine team here got me back on the track faster than I hoped."</p>
-                    <div class="author">
-                        <div class="initial">JR</div>
-                        <div class="name">Jessica R.</div>
-                    </div>
-                </div>
-                <div class="testimonial-card animate-on-scroll fade-up" style="transition-delay: 0.2s;">
-                    <div class="stars">
-                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                    </div>
-                    <p class="quote">"Very professional setting. The staff is polite, wait times are short, and the doctor thoroughly explains every step of the treatment."</p>
-                    <div class="author">
-                        <div class="initial">DT</div>
-                        <div class="name">David T.</div>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </section>
