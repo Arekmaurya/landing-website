@@ -9,7 +9,7 @@ from django.views.decorators.http import require_POST
 
 import os
 import requests
-from .models import ClinicInformation, Credential, Review
+from .models import ClinicInformation, Credential, Review, Appointment
 logger = logging.getLogger(__name__)
 
 
@@ -117,6 +117,14 @@ def api_appointments(request):
                 {'error': 'Please fill in all required fields.'},
                 status=400,
             )
+
+        # Save to database
+        Appointment.objects.create(
+            name=name,
+            age=int(age),
+            sex=sex,
+            contact=contact
+        )
 
         # Log the appointment
         logger.info(

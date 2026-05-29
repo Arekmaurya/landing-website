@@ -4,7 +4,7 @@ from unittest.mock import patch, MagicMock
 
 from django.test import TestCase, Client
 from django.core.files.base import ContentFile
-from appointments.models import ClinicInformation, Credential, Review
+from appointments.models import ClinicInformation, Credential, Review, Appointment
 
 
 class HomepageTests(TestCase):
@@ -99,15 +99,13 @@ class ReviewsTests(TestCase):
             name='Michael S.',
             initial='MS',
             stars=5,
-            quote='Dr. Agnihotri is a miracle worker.',
-            delay='0.1s'
+            quote='Dr. Agnihotri is a miracle worker.'
         )
         self.r2 = Review.objects.create(
             name='Jessica R.',
             initial='JR',
             stars=5,
-            quote='ACL tear recovery was super fast.',
-            delay='0.2s'
+            quote='ACL tear recovery was super fast.'
         )
 
     def test_reviews_rendered(self):
@@ -137,7 +135,7 @@ class ReviewsTests(TestCase):
         
         response2 = self.client.get('/')
         self.assertContains(response2, 'class="patient-img"')
-        self.assertContains(response2, 'avatar.gif')
+        self.assertContains(response2, self.r1.image.url)
         self.assertNotContains(response2, '<div class="initial">MS</div>')
 
 
@@ -207,7 +205,7 @@ class AppointmentAPITests(TestCase):
         self.assertEqual(response.status_code, 405)
 
     def test_valid_submission_returns_200(self):
-        """A valid appointment submission should return 200."""
+        """A valid appointment submission should return 200 and save to database."""
         response = self.client.post(
             '/api/appointments',
             data=json.dumps(self.valid_data),
@@ -217,6 +215,15 @@ class AppointmentAPITests(TestCase):
         data = response.json()
         self.assertIn('message', data)
         self.assertIn('Booking confirmed', data['message'])
+
+        # Verify saved database record
+        appointment = Appointment.objects.first()
+        self.assertIsNotNone(appointment)
+        self.assertEqual(appointment.name, 'Test User')
+        self.assertEqual(appointment.age, 30)
+        self.assertEqual(appointment.sex, 'Male')
+        self.assertEqual(appointment.contact, '+91 98765 43210')
+        self.assertEqual(appointment.status, 'pending')
 
     def test_valid_submission_with_int_age(self):
         """Age sent as integer should not crash the server."""

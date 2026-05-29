@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import ClinicInformation, Credential, Review
+from .models import ClinicInformation, Credential, Review, Appointment
 
 @admin.register(ClinicInformation)
 class ClinicInformationAdmin(admin.ModelAdmin):
@@ -53,3 +53,14 @@ class ReviewAdmin(admin.ModelAdmin):
         return format_html('<span style="background: #187fb0; color: white; padding: 6px 8px; border-radius: 50%; font-weight: bold; font-size: 0.85rem;">{}</span>', obj.initial or (obj.name[0] if obj.name else ''))
     
     avatar_preview.short_description = 'Avatar'
+
+
+@admin.register(Appointment)
+class AppointmentAdmin(admin.ModelAdmin):
+    list_display = ('name', 'age', 'sex', 'contact', 'created_at', 'status')
+    list_filter = ('status', 'created_at', 'sex')
+    list_editable = ('status',)
+    search_fields = ('name', 'contact')
+    readonly_fields = ('name', 'age', 'sex', 'contact', 'created_at')
+    ordering = ('-created_at',)
+

@@ -58,8 +58,33 @@ class Review(models.Model):
     initial = models.CharField(max_length=10, blank=True, help_text="Fallback avatar initials if image is missing")
     stars = models.PositiveIntegerField(default=5, choices=[(i, f"{i} Stars") for i in range(1, 6)])
     quote = models.TextField()
-    delay = models.CharField(max_length=10, default="0.1s", help_text="CSS fade animation delay (e.g. 0.1s, 0.2s)")
     image = models.ImageField(upload_to="patients/", blank=True, null=True, help_text="Optional patient photo avatar")
 
     def __str__(self):
         return f"{self.name} - {self.stars} Stars"
+
+
+class Appointment(models.Model):
+    """Patient appointment booking records."""
+    name = models.CharField(max_length=100)
+    age = models.IntegerField()
+    sex = models.CharField(max_length=20)
+    contact = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+    ]
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='pending'
+    )
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.name} - {self.contact} ({self.created_at.strftime('%Y-%b-%d')})"
