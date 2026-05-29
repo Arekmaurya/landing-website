@@ -61,8 +61,7 @@ class Command(BaseCommand):
                 name=name,
                 initial=initial,
                 stars=stars,
-                quote=quote,
-                delay=delay
+                quote=quote
             )
             
             # Download remote images if present to local media storage
