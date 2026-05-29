@@ -8,6 +8,9 @@ You can easily edit the doctor's credentials and patient reviews without touchin
 
 1. **Credentials**: Open `appointments/data/credentials.json` and edit the text inside the list.
 2. **Reviews**: Open `appointments/data/reviews.json` and edit the quote, name, initial, and star rating.
+3. **Contact Info & Map**: Open `appointments/data/contact.json` to change the clinic's address, phone, WhatsApp, working hours, or map link.
+
+*Note for Map Link:* You can paste *any* standard Google Maps link (including share links like `https://maps.app.goo.gl/...`, place search URLs, or even just a plain text address like "Empire State Building, NY") into `map_link`. The website backend will resolve and embed the map automatically.
 
 The website will automatically read these files and update the live page.
 

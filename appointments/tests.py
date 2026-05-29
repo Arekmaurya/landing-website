@@ -132,6 +132,51 @@ class ConfigTests(TestCase):
         self.assertIn(data['notification_method'], ['email', 'whatsapp', 'both'])
 
 
+class ContactTests(TestCase):
+    """Test contact details and maps embed loading/resolution."""
+
+    def setUp(self):
+        self.client = Client()
+
+    def test_contact_json_is_valid(self):
+        """contact.json should be valid JSON and have required fields."""
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        path = os.path.join(base_dir, 'data', 'contact.json')
+        with open(path, 'r') as f:
+            data = json.load(f)
+        self.assertIn('address', data)
+        self.assertIn('phone', data)
+        self.assertIn('whatsapp', data)
+        self.assertIn('working_hours', data)
+        self.assertIn('map_link', data)
+
+    def test_contact_rendered_on_homepage(self):
+        """Contact info from contact.json should appear on the homepage."""
+        response = self.client.get('/')
+        self.assertContains(response, '123 Medical Arcade')
+        self.assertContains(response, '+1 (555) 123-4567')
+
+    def test_resolve_map_embed_url(self):
+        """Test the resolve_map_embed_url helper logic."""
+        from appointments.views import resolve_map_embed_url
+        
+        # 1. Custom embed URL already formatted
+        url = "https://www.google.com/maps/embed?pb=123"
+        self.assertEqual(resolve_map_embed_url(url), url)
+        
+        # 2. Plain address name
+        addr = "1600 Amphitheatre Pkwy, Mountain View, CA"
+        resolved = resolve_map_embed_url(addr)
+        self.assertIn("q=1600%20Amphitheatre%20Pkwy", resolved)
+        self.assertIn("output=embed", resolved)
+        
+        # 3. Share URL with place parameter
+        share_url = "https://www.google.com/maps/place/Empire+State+Building/@40.7484405,-73.9882393,17z"
+        resolved_share = resolve_map_embed_url(share_url)
+        self.assertIn("q=Empire+State+Building", resolved_share)
+        self.assertIn("output=embed", resolved_share)
+
+
 class AppointmentAPITests(TestCase):
     """Test the /api/appointments endpoint."""
 

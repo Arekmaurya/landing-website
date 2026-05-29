@@ -12,12 +12,60 @@ import requests
 logger = logging.getLogger(__name__)
 
 
+def resolve_map_embed_url(map_link):
+    """
+    Resolves standard google maps links or address names into an iframe-friendly embed URL.
+    """
+    if not map_link:
+        return "https://maps.google.com/maps?q=Empire+State+Building&output=embed"
+    
+    # If it is already an embed URL, return it
+    if "maps/embed" in map_link or "output=embed" in map_link:
+        return map_link
+    
+    # Try to resolve shortened link (e.g., maps.app.goo.gl or goo.gl/maps)
+    if "goo.gl" in map_link or "maps.app" in map_link:
+        try:
+            # Send a HEAD request to follow redirects
+            r = requests.head(map_link, allow_redirects=True, timeout=3)
+            map_link = r.url
+        except Exception as e:
+            logger.warning(f"Failed to follow map redirect: {e}")
+            
+    # If it is a place/location URL, extract the query
+    if "maps/place/" in map_link:
+        try:
+            parts = map_link.split("maps/place/")
+            if len(parts) > 1:
+                place = parts[1].split("/")[0]
+                return f"https://maps.google.com/maps?q={place}&output=embed"
+        except Exception:
+            pass
+
+    # If it is a search query URL
+    if "q=" in map_link:
+        try:
+            import urllib.parse as urlparse
+            parsed = urlparse.urlparse(map_link)
+            q = urlparse.parse_qs(parsed.query).get('q', [''])[0]
+            if q:
+                from urllib.parse import quote
+                return f"https://maps.google.com/maps?q={quote(q)}&output=embed"
+        except Exception:
+            pass
+
+    # Treat the entire string as the query/address
+    from urllib.parse import quote
+    return f"https://maps.google.com/maps?q={quote(map_link)}&output=embed"
+
+
 def index(request):
     """Serve the main landing page."""
     base_dir = os.path.dirname(os.path.abspath(__file__))
     
     credentials = []
     reviews = []
+    contact = {}
     
     try:
         with open(os.path.join(base_dir, 'data', 'credentials.json'), 'r') as f:
@@ -30,10 +78,20 @@ def index(request):
             reviews = json.load(f)
     except Exception as e:
         logger.error(f"Error loading reviews: {e}")
+
+    try:
+        with open(os.path.join(base_dir, 'data', 'contact.json'), 'r') as f:
+            contact = json.load(f)
+    except Exception as e:
+        logger.error(f"Error loading contact info: {e}")
         
+    map_embed_url = resolve_map_embed_url(contact.get('map_link', ''))
+    
     context = {
         'credentials': credentials,
         'reviews': reviews,
+        'contact': contact,
+        'map_embed_url': map_embed_url,
     }
     return render(request, 'index.html', context)
 

@@ -173,21 +173,21 @@
                         <i class="fa-solid fa-location-dot"></i>
                         <div>
                             <h4>Clinic Location</h4>
-                            <p>123 Medical Arcade, Suite 400<br>Metropolis, NY 10001</p>
+                            <p>{{ contact.address }}</p>
                         </div>
                     </div>
                     <div class="info-block">
                         <i class="fa-solid fa-phone"></i>
                         <div>
                             <h4>Call Us</h4>
-                            <p>+1 (555) 123-4567<br><small>Mon-Fri, 8am - 6pm</small></p>
+                            <p>{{ contact.phone }}<br><small>{{ contact.working_hours.weekdays }}</small></p>
                         </div>
                     </div>
                     <div class="info-block">
                         <i class="fa-brands fa-whatsapp"></i>
                         <div>
                             <h4>WhatsApp Us</h4>
-                            <p>+1 (555) 123-4567</p>
+                            <p>{{ contact.whatsapp }}</p>
                         </div>
                     </div>
                 </div>
@@ -231,7 +231,7 @@
     <!-- Location Map -->
     <section class="map-section">
         <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.6175407386008!2d-73.98782292346985!3d40.74844047138767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a9b3117469%3A0xd134e199a405a163!2sEmpire%20State%20Building!5e0!3m2!1sen!2sus!4v1713374240000!5m2!1sen!2sus" 
+            src="{{ map_embed_url }}" 
             width="100%" 
             height="400" 
             style="border:0; display: block;" 
@@ -267,9 +267,9 @@
             </div>
             <div class="footer-links">
                 <h4>Working Hours</h4>
-                <p>Mon - Fri: 8:00 AM - 6:00 PM</p>
-                <p>Sat: 9:00 AM - 2:00 PM</p>
-                <p>Sun: Closed</p>
+                <p>{{ contact.working_hours.weekdays }}</p>
+                <p>{{ contact.working_hours.saturday }}</p>
+                <p>{{ contact.working_hours.sunday }}</p>
             </div>
         </div>
         <div class="footer-bottom">
