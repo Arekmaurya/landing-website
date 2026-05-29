@@ -149,12 +149,43 @@ class ContactTests(TestCase):
         self.assertIn('whatsapp', data)
         self.assertIn('working_hours', data)
         self.assertIn('map_link', data)
+        self.assertIn('socials', data)
 
     def test_contact_rendered_on_homepage(self):
         """Contact info from contact.json should appear on the homepage."""
         response = self.client.get('/')
         self.assertContains(response, '123 Medical Arcade')
         self.assertContains(response, '+1 (555) 123-4567')
+        self.assertContains(response, 'href="https://facebook.com"')
+        self.assertContains(response, 'href="https://twitter.com"')
+
+    def test_socials_hiding_if_empty(self):
+        """Social icons should not render if they are empty in contact.json."""
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        path = os.path.join(base_dir, 'data', 'contact.json')
+        
+        # Back up original content
+        with open(path, 'r') as f:
+            original_content = f.read()
+            
+        try:
+            # Write contact data with empty socials
+            data = json.loads(original_content)
+            data['socials']['facebook'] = ''
+            data['socials']['twitter'] = ''
+            with open(path, 'w') as f:
+                json.dump(data, f)
+                
+            response = self.client.get('/')
+            self.assertNotContains(response, 'href="https://facebook.com"')
+            self.assertNotContains(response, 'aria-label="Facebook"')
+            self.assertNotContains(response, 'aria-label="Twitter"')
+            # But instagram and linkedin should still render
+            self.assertContains(response, 'aria-label="Instagram"')
+        finally:
+            # Restore original contact.json
+            with open(path, 'w') as f:
+                f.write(original_content)
 
     def test_resolve_map_embed_url(self):
         """Test the resolve_map_embed_url helper logic."""

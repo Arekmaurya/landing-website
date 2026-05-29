@@ -252,10 +252,18 @@
                 </a>
                 <p>Restoring movement and enhancing the quality of life through expert orthopaedic precision.</p>
                 <div class="socials">
-                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
-                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                    {% if contact.socials.facebook %}
+                    <a href="{{ contact.socials.facebook }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    {% endif %}
+                    {% if contact.socials.twitter %}
+                    <a href="{{ contact.socials.twitter }}" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+                    {% endif %}
+                    {% if contact.socials.instagram %}
+                    <a href="{{ contact.socials.instagram }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    {% endif %}
+                    {% if contact.socials.linkedin %}
+                    <a href="{{ contact.socials.linkedin }}" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    {% endif %}
                 </div>
             </div>
             <div class="footer-links">
