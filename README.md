@@ -1,25 +1,24 @@
 # Orthocare Website
 
-This is a Django-based website for Dr. Akhil Agnihotri's Orthopaedic Care clinic.
+This is a Django-based website for Dr. Akhil Agnihotri's Orthopaedic Care clinic, featuring dynamic content management, real-time validations, and automatic notification dispatching.
 
 ## Editing Website Content & Settings
 
-You can manage all of the website's content and configuration settings from a single, simple file: **`appointments/data/content.json`**.
+All of the website's content, text, doctor profile images, patient reviews, credentials, and configuration settings are stored in the SQLite database and can be managed visually from the **Django Admin Panel** (`/admin/`).
 
-Open `appointments/data/content.json` to edit:
-1. **Credentials**: A list of strings displaying the doctor's board certifications and qualifications.
-2. **Reviews**: Patient stories (including names, initials, quotes, star ratings, and optional patient photos).
-   * *Note for Patient Images:* You can add an optional `"image"` field pointing to a local static path (e.g., `/static/assets/images/filename.png`) or any online image URL. If a review has no image, the website will automatically fall back to rendering a clean circle with their initials.
-3. **Contact Info & Map**: Clinic address, phone numbers, working hours, and social media links.
-   * *Note for Map Link:* You can paste *any* standard Google Maps link (including share links like `https://maps.app.goo.gl/...`, place search URLs, or even just a plain text address like "Empire State Building, NY") into `map_link`. The website backend will resolve and embed the map automatically.
-4. **Notification Settings**: Under `notification_method`, you can select:
-   * `"email"` - Send an email notification only.
-   * `"whatsapp"` - Send a WhatsApp notification only.
-   * `"both"` - Send both notifications.
+To customize settings:
+1. **Access the Admin:** Open `http://localhost:8000/admin/` in your browser.
+2. **Authenticate:** Log in using your admin superuser account (see setup steps below).
+3. **Manage Content:**
+   * **Clinic Information:** Update address, phone numbers, WhatsApp contacts, social links, and upload/preview the doctor's profile picture.
+   * **Credentials:** Add or reorder professional certifications.
+   * **Testimonials:** Manage patient reviews, star ratings, and upload patient photos (avatars) which support a fallback to initials and an interactive lightbox.
+   * **Notification preferences:** Choose to send appointment notifications to the admin via email, WhatsApp, or both.
 
-*Note: Any edits made to `content.json` are applied instantly without needing a server restart.*
+---
 
 ### Setting up Environment Variables
+
 Before notifications will send, you must copy `.env.example` to `.env` and fill in your credentials.
 
 **For Email:**
@@ -31,14 +30,30 @@ Before notifications will send, you must copy `.env.example` to `.env` and fill 
 - Provide the `WHATSAPP_PHONE_NUMBER_ID` and a permanent `WHATSAPP_ACCESS_TOKEN`.
 - Set the `ADMIN_WHATSAPP_NUMBER` (include country code, e.g., `1234567890`).
 
-## Running the Server
+---
 
-1. Install requirements:
+## Local Setup & Development
+
+1. **Install requirements:**
    ```bash
    pip install -r requirements.txt
    ```
-2. Run the development server:
+2. **Apply database migrations:**
+   ```bash
+   python manage.py migrate
+   ```
+3. **Create an Admin account:**
+   ```bash
+   python manage.py createsuperuser
+   ```
+4. **Run the development server:**
    ```bash
    python manage.py runserver
    ```
-3. Visit `http://localhost:8000/` in your browser.
+5. **Visit the page:** Go to `http://localhost:8000/` in your browser.
+
+## Running Tests
+To run the comprehensive test suite (which tests views, models, API logic, validations, and notifications):
+```bash
+python manage.py test
+```

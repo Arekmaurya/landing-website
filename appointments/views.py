@@ -1,5 +1,6 @@
 import json
 import logging
+from urllib.parse import quote, urlparse, parse_qs
 
 from django.conf import settings
 from django.core.mail import send_mail
@@ -7,7 +8,6 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
-import os
 import requests
 from .models import ClinicInformation, Credential, Review, Appointment
 logger = logging.getLogger(__name__)
@@ -46,17 +46,14 @@ def resolve_map_embed_url(map_link):
     # If it is a search query URL
     if "q=" in map_link:
         try:
-            import urllib.parse as urlparse
-            parsed = urlparse.urlparse(map_link)
-            q = urlparse.parse_qs(parsed.query).get('q', [''])[0]
+            parsed = urlparse(map_link)
+            q = parse_qs(parsed.query).get('q', [''])[0]
             if q:
-                from urllib.parse import quote
                 return f"https://maps.google.com/maps?q={quote(q)}&output=embed"
         except Exception:
             pass
 
     # Treat the entire string as the query/address
-    from urllib.parse import quote
     return f"https://maps.google.com/maps?q={quote(map_link)}&output=embed"
 
 
@@ -90,12 +87,19 @@ def index(request):
             'linkedin': clinic.linkedin_url,
         }
     }
+    # Resolve doctor profile image (admin-uploaded or static fallback)
+    if clinic.doctor_image:
+        doctor_image_url = clinic.doctor_image.url
+    else:
+        from django.templatetags.static import static
+        doctor_image_url = static('assets/images/doctor.png')
     
     context = {
         'credentials': credentials,
         'reviews': reviews,
         'contact': contact,
         'map_embed_url': map_embed_url,
+        'doctor_image_url': doctor_image_url,
     }
     return render(request, 'index.html', context)
 
@@ -118,10 +122,29 @@ def api_appointments(request):
                 status=400,
             )
 
+        # Validate age is a valid integer within acceptable range
+        try:
+            age_int = int(age)
+            if age_int < 1 or age_int > 120:
+                raise ValueError()
+        except (ValueError, TypeError):
+            return JsonResponse(
+                {'error': 'Age must be a valid number between 1 and 120.'},
+                status=400,
+            )
+
+        # Validate sex against allowed choices
+        ALLOWED_SEX = {'Male', 'Female', 'Other'}
+        if sex not in ALLOWED_SEX:
+            return JsonResponse(
+                {'error': 'Invalid sex value.'},
+                status=400,
+            )
+
         # Save to database
         Appointment.objects.create(
             name=name,
-            age=int(age),
+            age=age_int,
             sex=sex,
             contact=contact
         )

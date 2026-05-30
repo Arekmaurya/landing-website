@@ -76,7 +76,7 @@
     <section id="about" class="about segment">
         <div class="container about-layout">
             <div class="about-image-wrapper animate-on-scroll fade-right">
-                <img src="{% static 'assets/images/doctor.png' %}" alt="Dr. Akhil Agnihotri Portrait" class="about-img">
+                <img src="{{ doctor_image_url }}" alt="Dr. Akhil Agnihotri Portrait" class="about-img">
                 <div class="experience-badge">
                     <span class="years">15+</span>
                     <span class="text">Years of<br>Excellence</span>
@@ -141,7 +141,7 @@
             </div>
             <div class="testimonial-grid">
                 {% for review in reviews %}
-                <div class="testimonial-card animate-on-scroll fade-up" style="transition-delay: 0.{{ forloop.counter }}s;">
+                <div class="testimonial-card animate-on-scroll fade-up" style="transition-delay: calc({{ forloop.counter }} * 0.1s);">
                     <div class="stars">
                         {% for _ in "12345"|make_list %}
                             {% if forloop.counter <= review.stars %}
@@ -154,7 +154,9 @@
                     <p class="quote">"{{ review.quote }}"</p>
                     <div class="author">
                         {% if review.image %}
-                        <img src="{{ review.image.url }}" alt="{{ review.name }}" class="patient-img">
+                        <a class="review-img-clickable" href="{{ review.image.url }}" data-lightbox>
+                            <img src="{{ review.image.url }}" alt="{{ review.name }}" class="patient-img">
+                        </a>
                         {% else %}
                         <div class="initial">{{ review.initial }}</div>
                         {% endif %}
@@ -288,6 +290,12 @@
             <p>&copy; 2026 Orthocare Specialist. All Rights Reserved.</p>
         </div>
     </footer>
+
+    <!-- Image Lightbox Modal -->
+    <div id="lightbox-overlay" class="lightbox-overlay" aria-hidden="true">
+        <button type="button" class="lightbox-close" aria-label="Close lightbox">&times;</button>
+        <img id="lightbox-img" class="lightbox-img" src="" alt="Full size image">
+    </div>
 
     <script src="{% static 'js/script.js' %}"></script>
 </body>

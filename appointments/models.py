@@ -1,3 +1,6 @@
+import os
+
+from django.core.exceptions import ValidationError
 from django.db import models
 
 class ClinicInformation(models.Model):
@@ -20,6 +23,14 @@ class ClinicInformation(models.Model):
     instagram_url = models.CharField(max_length=255, blank=True, default="https://instagram.com")
     linkedin_url = models.CharField(max_length=255, blank=True, default="https://linkedin.com")
     
+    # Doctor profile image
+    doctor_image = models.ImageField(
+        upload_to='doctor/',
+        blank=True,
+        null=True,
+        help_text="Profile image for the About section. Max 2 MB. Accepted: .jpg, .jpeg, .png, .webp"
+    )
+    
     # Notification method
     NOTIFICATION_CHOICES = [
         ('email', 'Email only'),
@@ -31,6 +42,26 @@ class ClinicInformation(models.Model):
         choices=NOTIFICATION_CHOICES,
         default='both'
     )
+
+    ALLOWED_IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp'}
+    MAX_IMAGE_SIZE_MB = 2
+
+    def clean(self):
+        super().clean()
+        if self.doctor_image:
+            # Validate file size (2 MB)
+            max_bytes = self.MAX_IMAGE_SIZE_MB * 1024 * 1024
+            if self.doctor_image.size > max_bytes:
+                raise ValidationError(
+                    f'Image file too large. Maximum size is {self.MAX_IMAGE_SIZE_MB} MB.'
+                )
+            # Validate file extension
+            ext = os.path.splitext(self.doctor_image.name)[1].lower()
+            if ext not in self.ALLOWED_IMAGE_EXTENSIONS:
+                raise ValidationError(
+                    f'Unsupported image format "{ext}". '
+                    f'Accepted formats: {", ".join(sorted(self.ALLOWED_IMAGE_EXTENSIONS))}'
+                )
 
     class Meta:
         verbose_name = "Clinic Information"

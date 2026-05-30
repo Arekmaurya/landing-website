@@ -1,0 +1,60 @@
+/* Live preview for new image selection */
+#doctor-image-live-preview {
+    margin-top: 10px;
+}
+
+#doctor-image-new-preview {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 10px;
+    object-fit: cover;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 2px solid #01baef;
+    margin-top: 6px;
+}
+
+#doctor-image-preview-label {
+    font-size: 0.85rem;
+    color: #01baef;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 10px;
+}
+
+/* Error message styling */
+.doctor-image-error-msg {
+    margin-top: 8px;
+    padding: 8px 14px;
+    background: #fee2e2;
+    color: #991b1b;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    max-width: 400px;
+    border-left: 3px solid #dc2626;
+}
+
+/* Toast notification */
+.doctor-image-toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: linear-gradient(135deg, #0b4f6c, #187fb0);
+    color: white;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    box-shadow: 0 8px 25px rgba(11, 79, 108, 0.4);
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+    pointer-events: none;
+}
+
+.doctor-image-toast.visible {
+    opacity: 1;
+    transform: translateY(0);
+}

@@ -1,10 +1,14 @@
 import json
 import os
+import shutil
+import tempfile
 from unittest.mock import patch, MagicMock
 
-from django.test import TestCase, Client
+from django.test import TestCase, Client, override_settings
 from django.core.files.base import ContentFile
 from appointments.models import ClinicInformation, Credential, Review, Appointment
+
+TEMP_MEDIA_ROOT = tempfile.mkdtemp()
 
 
 class HomepageTests(TestCase):
@@ -89,8 +93,14 @@ class CredentialsTests(TestCase):
         self.assertContains(response, 'Member of the National Orthopaedic Association')
 
 
+@override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class ReviewsTests(TestCase):
     """Test that reviews are loaded from database and rendered."""
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
 
     def setUp(self):
         self.client = Client()

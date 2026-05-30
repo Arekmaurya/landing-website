@@ -1,83 +1,78 @@
 # Doctor Website Customization Guide
 
-Welcome to your new Orthopaedic Specialist webpage! This document will explain how you can freely edit the website's text, images, and configuration even if you don't know much about coding. 
+Welcome to the Django-based Orthopaedic Specialist website! Since the backend was migrated to Django, you no longer need to edit HTML files to change text, configurations, or images. You can manage everything through a visual admin interface!
 
 ## Project Structure Overview
-- `public/index.html` — The main structure of the page (where all text lives).
-- `public/styles.css` — The styling rules (colors, fonts, sizes).
-- `public/script.js` — Functionality (form submission and animations).
-- `public/assets/images/` — Folder containing the background and doctor images.
-- `server.js` — The backend server handling the contact form.
+- `appointments/templates/index.html` — The template structure of the page.
+- `appointments/static/css/styles.css` — The styling rules (colors, fonts, sizes).
+- `appointments/static/js/script.js` — Client-side interaction (validations, animations, lightboxes).
+- `appointments/models.py` — Database schema/structure.
+- `orthocare_project/settings.py` — Core Django configuration.
 
 ---
 
-## 1. How to Change Text Elements
+## 1. How to Customize Text & Config via Django Admin
 
-All text shown on the website exists within the `public/index.html` file. 
+Instead of modifying code, you can use the built-in Django Admin portal.
 
-**Steps:**
-1. Open `public/index.html` in an editor (like VSCode or Notepad).
-2. Press `Ctrl + F` to find the text you want to change (e.g., "Dr. John Doe").
-3. Delete the text and type your new text.
-4. Save the file.
-
-### Specific Examples:
-- **Changing the Name:** Search for `Dr. John Doe` or `Move Freely, Live Fully.` in the `<section id="home">` and modify it.
-- **Modifying Phone Number / Email:** Scroll to the bottom or search for `+1 (555) 123-4567` and `appointments@orthocare.com` and replace them with real details.
-- **Updating the Working Hours:** Scroll down to the Footer section near the very end of the file.
-
----
-
-## 2. How to Change Images
-
-### Background/Hero Image
-1. Prepare your new image (preferably a wide, high-resolution image).
-2. Name the file `hero_bg.png` (or `.jpg`).
-3. Place the file inside the `public/assets/images/` folder.
-4. If it's a `.jpg`, you must open `public/styles.css`, find `.hero`, and change `.png` to `.jpg` in `background: url('assets/images/hero_bg.png')`.
-
-### Doctor Portrait Image
-1. Get an image of the doctor.
-2. Name it `doctor.png`.
-3. Replace the existing `doctor.png` file in the `public/assets/images/` folder.
-
-### Specialty Icons/Images
-Inside `public/index.html`, under `<section id="specialties">`, there are standard Unsplash sample images linked via URLs. 
-Like this:
-`src="https://images.unsplash.com/photo-..."`
-You can replace that whole `http` address with local paths (like `assets/images/new_image.jpg`) or a different web address.
+1. **Start the server:** `python manage.py runserver`
+2. **Create an admin user (first time only):**
+   ```bash
+   python manage.py createsuperuser
+   ```
+   Follow the prompts to enter a username, email, and password.
+3. **Log in:** Open `http://127.0.0.1:8000/admin/` in your browser and enter your credentials.
+4. **Customizations:**
+   * **Clinic Information:** Edit the single configuration entry to update the phone numbers, address, working hours, social media links, notification methods (Email, WhatsApp, or both), Google Map links, and the main doctor's profile image.
+   * **Credentials:** Add, edit, or reorder the doctor's board certifications and qualifications.
+   * **Reviews:** Manage patient reviews, star ratings, quotes, and upload patient photos (avatars) directly.
 
 ---
 
-## 3. How to Change Colors
+## 2. Dynamic Google Maps Embed
+You can paste *any* standard Google Maps address, query, or share link into the `map_link` field in the Admin dashboard:
+* **Short links:** `https://maps.app.goo.gl/xxxx`
+* **Direct queries:** `Empire State Building, NY` or `1600 Amphitheatre Pkwy, Mountain View, CA`
+The backend automatically resolves the address and generates a fully interactive, responsive map frame.
 
-If you want the base theme color to change from Medical Blue to something else, you only need to change it in one place!
+---
 
-1. Open `public/styles.css`.
-2. Look at the very top under `:root`.
+## 3. How to Customize Styles (Colors, Fonts)
+
+To modify the theme colors, font choices, or sizing:
+
+1. Open `appointments/static/css/styles.css`.
+2. Locate the `:root` element at the top:
    ```css
    :root {
        --primary-color: #0b4f6c; /* Elegant Medical Blue */
-       --secondary-color: #01baef; /* Bright Teal for accents */
+       --secondary-color: #01baef; /* Bright Teal Accent */
+       --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+       ...
    }
    ```
-3. Change `#0b4f6c` to any HEX code string representing the color you want. All buttons, titles, and backgrounds will automatically update to match!
+3. Change the Hex color code (e.g., `#0b4f6c`) to your preference. The entire site (buttons, background accents, icons) will instantly update.
 
 ---
 
-## 4. Setting Up & Running the Site
+## 4. Local Setup & Testing
 
-If you want to view the website locally and test the contact form:
+If you want to run the project locally and test forms/notifications:
 
-1. Open your terminal in the directory of this project.
-2. Make sure you have downloaded all libraries:
+1. **Install requirements:**
    ```bash
-   npm install
+   pip install -r requirements.txt
    ```
-3. Start the server:
+2. **Apply migrations & seed default data:**
    ```bash
-   node server.js
+   python manage.py migrate
+   python manage.py seed_content   # Optional: Seeds default content if database is empty
    ```
-4. Open your browser and go to `http://localhost:3000`.
-
-When users submit the contact form on that page, the backend receives the information and prints it to this terminal window. In the future, a developer can edit `server.js` to hook it up to a database or send you an email notification instead of just logging it. 
+3. **Environment Setup:**
+   * Copy `.env.example` to `.env`.
+   * Configure SMTP settings for email notifications or WhatsApp API details for instant text notifications.
+4. **Run Server:**
+   ```bash
+   python manage.py runserver
+   ```
+5. **View Website:** Visit `http://127.0.0.1:8000/` in your browser.

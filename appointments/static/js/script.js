@@ -6,11 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.scrollY > 50) {
             header.classList.add('scrolled');
         } else {
-            header.classList.add('scrolled'); // Force styling if we want it always light
-            // Actually, let's keep the transparent-to-light effect:
-            if (window.scrollY <= 50) {
-                 header.classList.remove('scrolled');
-            }
+            header.classList.remove('scrolled');
         }
     });
 
@@ -107,15 +103,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = await response.json();
 
                 if (response.ok) {
+                    formMsg.style.display = 'block';
                     formMsg.innerText = '✅ ' + (result.message || 'Booking confirmed!');
                     formMsg.className = 'form-message success';
                     form.reset();
                 } else {
+                    formMsg.style.display = 'block';
                     formMsg.innerText = result.error || 'Something went wrong. Please try again.';
                     formMsg.className = 'form-message error';
                 }
             } catch (error) {
                 console.error('Submission error:', error);
+                formMsg.style.display = 'block';
                 formMsg.innerText = 'Network error. Please try again later.';
                 formMsg.className = 'form-message error';
             } finally {
@@ -128,5 +127,47 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 6000);
             }
         });
+    }
+
+    // 6. Lightbox for review patient images
+    const lightboxOverlay = document.getElementById('lightbox-overlay');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxClose = document.querySelector('.lightbox-close');
+
+    if (lightboxOverlay) {
+        // Open lightbox when clicking a review image link
+        document.querySelectorAll('[data-lightbox]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const imgSrc = link.getAttribute('href');
+                lightboxImg.src = imgSrc;
+                lightboxOverlay.classList.add('active');
+                lightboxOverlay.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        // Close lightbox — close button
+        lightboxClose.addEventListener('click', closeLightbox);
+
+        // Close lightbox — overlay click (not on the image itself)
+        lightboxOverlay.addEventListener('click', (e) => {
+            if (e.target === lightboxOverlay) {
+                closeLightbox();
+            }
+        });
+
+        // Close lightbox — Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightboxOverlay.classList.contains('active')) {
+                closeLightbox();
+            }
+        });
+
+        function closeLightbox() {
+            lightboxOverlay.classList.remove('active');
+            lightboxOverlay.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
     }
 });
